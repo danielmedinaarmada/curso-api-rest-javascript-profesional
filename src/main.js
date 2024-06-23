@@ -1,5 +1,4 @@
 //Peliculas en tendencias
-
 async function getTrendingMoviesPreview() {
   const res = await fetch(
     "https://api.themoviedb.org/3/trending/movie/day?api_key=" + API_KEY
@@ -26,4 +25,31 @@ async function getTrendingMoviesPreview() {
   });
 }
 
+//Lista de cateogorias o genero de peliculas
+async function getCategoriesPreview() {
+  const res = await fetch(
+    "https://api.themoviedb.org/3/genre/movie/list?api_key=" + API_KEY
+  );
+  const data = await res.json();
+  const categories = data.genres;
+
+  console.log({ data, categories });
+
+  categories.forEach((category) => {
+    const previewCategoriesContainer = document.querySelector("#categoriesPreview .categoriesPreview-list");
+    const categoryContainter = document.createElement("div");
+    categoryContainter.classList.add("category-container");
+    
+    const categoryTitle = document.createElement("h3");
+    categoryTitle.classList.add("category-title");
+    categoryTitle.setAttribute("id", "id" + category.id);
+    const categoryTitleText = document.createTextNode(category.name);
+ 
+    categoryTitle.appendChild(categoryTitleText);
+    categoryContainter.appendChild(categoryTitle);
+    previewCategoriesContainer.appendChild(categoryContainter);
+  });
+}
+
 getTrendingMoviesPreview();
+getCategoriesPreview();
