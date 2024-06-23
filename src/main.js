@@ -1,7 +1,7 @@
 //Peliculas en tendencias
 async function getTrendingMoviesPreview() {
   const res = await fetch(
-    "https://api.themoviedb.org/3/trending/movie/day?api_key=" + API_KEY
+    "https://api.themoviedb.org/3/trending/movie/day?api_key=" + API_KEY + '&language=es'
   );
   const data = await res.json();
   const movies = data.results;
@@ -28,7 +28,7 @@ async function getTrendingMoviesPreview() {
 //Lista de cateogorias o genero de peliculas
 async function getCategoriesPreview() {
   const res = await fetch(
-    "https://api.themoviedb.org/3/genre/movie/list?api_key=" + API_KEY
+    "https://api.themoviedb.org/3/genre/movie/list?api_key=" + API_KEY + '&language=es'
   );
   const data = await res.json();
   const categories = data.genres;
