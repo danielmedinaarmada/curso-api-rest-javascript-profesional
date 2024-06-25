@@ -75,6 +75,12 @@ function categoriesPages() {
   // en el home no tenemos una lista de peliculas en vertical, solo las vistas en horizonal
   movieDetailSection.classList.add("inactive");
   // igual con el movie details
+
+  //['#category', 'id-name']
+  const [, categoryData] = location.hash.split("=");
+  const [categoryId, categoryName] = categoryData.split("-");
+  headerCategoryTitle.innerText = categoryName;
+  getMoviesByCategory(categoryId);
 }
 
 function movieDetailsPage() {
