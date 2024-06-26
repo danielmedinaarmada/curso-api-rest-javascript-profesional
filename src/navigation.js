@@ -21,6 +21,9 @@ function navigator() {
   if (searchIndexRenderPage !== -1)
     redering = pages[searchIndexRenderPage].render;
   redering();
+
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
 }
 
 function homePage() {
@@ -79,7 +82,7 @@ function categoriesPages() {
   //['#category', 'id-name']
   const [, categoryData] = location.hash.split("=");
   const [categoryId, categoryName] = categoryData.split("-");
-  headerCategoryTitle.innerText = categoryName;
+  headerCategoryTitle.innerText = decodeURIComponent(categoryName);
   getMoviesByCategory(categoryId);
 }
 
