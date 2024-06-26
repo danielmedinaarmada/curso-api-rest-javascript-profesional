@@ -92,3 +92,18 @@ async function getMoviesByCategory(id) {
 
   createMovies(movies, genericSection)
 }
+
+
+async function getMoviesBySearch(query) {
+  const { data } = await api("search/movie", {
+    params: {
+      query: query,
+      language: "es",
+    }, 
+  }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
+  const movies = data.results;
+
+  console.log({ query, movies });
+
+  createMovies(movies, genericSection)
+}
