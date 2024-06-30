@@ -12,7 +12,7 @@ const api = axios.create({
   },
 });
 
-// Helpers / Utils 
+// Helpers / Utils
 function createMovies(data, container) {
   container.innerHTML = "";
   data.forEach((movie) => {
@@ -22,6 +22,10 @@ function createMovies(data, container) {
     // );
     const movieContainter = document.createElement("div");
     movieContainter.classList.add("movie-container");
+    movieContainter.addEventListener("click", () => {
+      location.hash = "#movie=" + movie.id;
+    });
+
     const movieImg = document.createElement("img");
     movieImg.classList.add("movie-img");
     movieImg.setAttribute("alt", movie.title);
@@ -35,7 +39,7 @@ function createMovies(data, container) {
   });
 }
 
-function createCategory(categories, containter){
+function createCategory(categories, containter) {
   containter.innerHTML = "";
   categories.forEach((category) => {
     // categoriesPreviewList
@@ -48,8 +52,8 @@ function createCategory(categories, containter){
     const categoryTitle = document.createElement("h3");
     categoryTitle.classList.add("category-title");
     categoryTitle.setAttribute("id", "id" + category.id);
-    categoryTitle.addEventListener('click', () => {
-      location.hash=`#category=${category.id}-${category.name}`;
+    categoryTitle.addEventListener("click", () => {
+      location.hash = `#category=${category.id}-${category.name}`;
     });
     const categoryTitleText = document.createTextNode(category.name);
 
@@ -67,8 +71,8 @@ async function getTrendingMoviesPreview() {
   const movies = data.results;
 
   console.log({ data, movies });
- 
-  createMovies(movies, trendingMoviePreviewList)
+
+  createMovies(movies, trendingMoviePreviewList);
 }
 
 //Lista de cateogorias o genero de peliculas
@@ -76,7 +80,7 @@ async function getCategoriesPreview() {
   const { data } = await api("genre/movie/list"); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const categories = data.genres;
   console.log({ data, categories });
-  createCategory(categories, categoriesPreviewList)
+  createCategory(categories, categoriesPreviewList);
 }
 
 async function getMoviesByCategory(id) {
@@ -84,36 +88,63 @@ async function getMoviesByCategory(id) {
     params: {
       with_genres: id,
       language: "es",
-    }, 
+    },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
 
   console.log({ data, movies });
 
-  createMovies(movies, genericSection)
+  createMovies(movies, genericSection);
 }
-
 
 async function getMoviesBySearch(query) {
   const { data } = await api("search/movie", {
     params: {
       query: query,
       language: "es",
-    }, 
+    },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
 
   console.log({ query, movies });
 
-  createMovies(movies, genericSection)
+  createMovies(movies, genericSection);
 }
-
 
 async function getTrendingMovies() {
   const { data } = await api("/trending/movie/day"); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
 
   console.log({ data, movies });
- 
+
   createMovies(movies, genericSection);
+}
+
+async function getMovieById(movie_id) {
+  // en actiox para renombrar data por movie
+  const { data: movie } = await api("movie/" + movie_id, {
+    params: {
+      language: "es",
+    },
+  });
+
+  console.log(movie);
+
+  const movieImgURL =  "https://image.tmdb.org/t/p/w500" + movie.poster_path;
+  headerSection.style.background = `
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.35) 19.27%,
+      rgba(0, 0, 0, 0) 29.17%
+    ),
+    url(${movieImgURL})
+  `;
+  console.log(movieImgURL);
+
+  movieDetailTitle.textContent = movie.title;
+  movieDetailDescription.textContent = movie.overview;
+  movieDetailScore.textContent = movie.vote_average;
+
+  createCategory(movie.genres, movieDetailCategoriesList);
+
 }
