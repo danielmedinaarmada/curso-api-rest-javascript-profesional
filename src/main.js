@@ -107,3 +107,13 @@ async function getMoviesBySearch(query) {
 
   createMovies(movies, genericSection)
 }
+
+
+async function getTrendingMovies() {
+  const { data } = await api("/trending/movie/day"); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
+  const movies = data.results;
+
+  console.log({ data, movies });
+ 
+  createMovies(movies, genericSection)
+}

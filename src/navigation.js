@@ -90,7 +90,7 @@ function categoriesPages() {
   //['#category', 'id-name']
   const [, categoryData] = location.hash.split("=");
   const [categoryId, categoryName] = categoryData.split("-");
-  headerCategoryTitle.innerText = decodeURIComponent(categoryName);
+  headerCategoryTitle.innerText = decodeURI(categoryName);
   getMoviesByCategory(categoryId);
 }
 
@@ -144,4 +144,8 @@ function trendsPages() {
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  headerCategoryTitle.innerText = 'Tendencias';
+
+  getTrendingMovies();
 }
