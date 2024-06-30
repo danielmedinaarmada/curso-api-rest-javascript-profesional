@@ -2,7 +2,13 @@ searchFormBtn.addEventListener("click", () => {
   location.hash = "#search=" + searchFormInput.value.trim();
 });
 trendingBtn.addEventListener("click", () => (location.hash = "#trends"));
-arrowBtn.addEventListener("click", () => (location.hash = "#home"));
+arrowBtn.addEventListener("click", () => {
+  if (document.domain !== "localhost") {
+    location.hash = "#home";
+  } else {
+    history.back();
+  }
+});
 
 window.addEventListener("DOMContentLoaded", navigator, false);
 window.addEventListener("hashchange", navigator, false);
@@ -119,10 +125,9 @@ function searchPages() {
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
 
-    //['#search', 'palabra']
-    const [, query] = location.hash.split("=");
-    getMoviesBySearch(query);
-
+  //['#search', 'palabra']
+  const [, query] = location.hash.split("=");
+  getMoviesBySearch(decodeURI(query));
 }
 
 function trendsPages() {
