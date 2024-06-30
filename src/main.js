@@ -115,5 +115,5 @@ async function getTrendingMovies() {
 
   console.log({ data, movies });
  
-  createMovies(movies, genericSection)
+  createMovies(movies, genericSection);
 }
