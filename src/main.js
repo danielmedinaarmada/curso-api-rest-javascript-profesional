@@ -130,7 +130,7 @@ async function getMovieById(movie_id) {
 
   console.log(movie);
 
-  const movieImgURL =  "https://image.tmdb.org/t/p/w500" + movie.poster_path;
+  const movieImgURL = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
   headerSection.style.background = `
     linear-gradient(
       180deg,
@@ -146,5 +146,16 @@ async function getMovieById(movie_id) {
   movieDetailScore.textContent = movie.vote_average;
 
   createCategory(movie.genres, movieDetailCategoriesList);
+  getRelatedMoviesId(movie_id);
+}
 
+async function getRelatedMoviesId(movie_id) {
+  const { data } = await api(`movie/${movie_id}/similar`, {
+    params: {
+      language: "es",
+    },
+  });
+
+  const relatedMovies = data.results;
+  createMovies(relatedMovies, relatedMoviesContainter);
 }
