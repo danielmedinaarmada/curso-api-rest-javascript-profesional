@@ -1,5 +1,5 @@
 searchFormBtn.addEventListener("click", () => {
-  location.hash = "#search=" + searchFormInput.value;
+  location.hash = "#search=" + searchFormInput.value.trim();
 });
 trendingBtn.addEventListener("click", () => (location.hash = "#trends"));
 arrowBtn.addEventListener("click", () => (location.hash = "#home"));
