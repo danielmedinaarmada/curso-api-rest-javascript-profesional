@@ -13,7 +13,20 @@ const api = axios.create({
 });
 
 // Helpers / Utils
-function createMovies(data, container) {
+
+const lazyLoader = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    console.log({entry});
+    console.log(entry.isIntersecting);
+    if (entry.isIntersecting){
+      const url = entry.target.getAttribute('data-img');
+      entry.target.setAttribute('src',url);
+      lazyLoader.unobserve(entry.target)
+    }
+  });
+});
+
+function createMovies(data, container, isLazyLoad=false) {
   container.innerHTML = "";
   data.forEach((movie) => {
     // trendingMoviePreviewList
@@ -30,9 +43,13 @@ function createMovies(data, container) {
     movieImg.classList.add("movie-img");
     movieImg.setAttribute("alt", movie.title);
     movieImg.setAttribute(
-      "src",
+      isLazyLoad ? "data-img" : "src",
       "https://image.tmdb.org/t/p/w300" + movie.poster_path
     );
+
+    if(isLazyLoad){
+      lazyLoader.observe(movieImg);
+    }
 
     movieContainter.appendChild(movieImg);
     container.appendChild(movieContainter);
@@ -72,7 +89,7 @@ async function getTrendingMoviesPreview() {
 
   console.log({ data, movies });
 
-  createMovies(movies, trendingMoviePreviewList);
+  createMovies(movies, trendingMoviePreviewList, true);
 }
 
 //Lista de cateogorias o genero de peliculas
