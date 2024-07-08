@@ -16,17 +16,21 @@ const api = axios.create({
 
 const lazyLoader = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    console.log({entry});
+    console.log({ entry });
     console.log(entry.isIntersecting);
-    if (entry.isIntersecting){
-      const url = entry.target.getAttribute('data-img');
-      entry.target.setAttribute('src',url);
-      lazyLoader.unobserve(entry.target)
+    if (entry.isIntersecting) {
+      const url = entry.target.getAttribute("data-img");
+      const alt = entry.target.getAttribute("data-alt");
+      entry.target.setAttribute("src", url);
+      entry.target.removeAttribute("data-img");
+      entry.target.removeAttribute("data-alt");
+      entry.target.setAttribute("alt", alt);
+      lazyLoader.unobserve(entry.target);
     }
   });
 });
 
-function createMovies(data, container, isLazyLoad=false) {
+function createMovies(data, container, isLazyLoad = false) {
   container.innerHTML = "";
   data.forEach((movie) => {
     // trendingMoviePreviewList
@@ -41,13 +45,14 @@ function createMovies(data, container, isLazyLoad=false) {
 
     const movieImg = document.createElement("img");
     movieImg.classList.add("movie-img");
-    movieImg.setAttribute("alt", movie.title);
+    movieImg.setAttribute("alt", "movie image");
+    movieImg.setAttribute(isLazyLoad ? "data-alt" : "alt", movie.title);
     movieImg.setAttribute(
       isLazyLoad ? "data-img" : "src",
       "https://image.tmdb.org/t/p/w300" + movie.poster_path
     );
 
-    if(isLazyLoad){
+    if (isLazyLoad) {
       lazyLoader.observe(movieImg);
     }
 
