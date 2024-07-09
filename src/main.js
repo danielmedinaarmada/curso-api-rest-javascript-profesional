@@ -16,8 +16,7 @@ const api = axios.create({
 
 const lazyLoader = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    console.log({ entry });
-    console.log(entry.isIntersecting);
+    console.log(entry.target );
     if (entry.isIntersecting) {
       const url = entry.target.getAttribute("data-img");
       const alt = entry.target.getAttribute("data-alt");
@@ -51,6 +50,12 @@ function createMovies(data, container, isLazyLoad = false) {
       isLazyLoad ? "data-img" : "src",
       "https://image.tmdb.org/t/p/w300" + movie.poster_path
     );
+    movieImg.addEventListener("error", () => {
+      movieImg.setAttribute( 
+        'src', 
+        "https://static.platzi.com/static/images/error/img404.png",
+      )
+    });
 
     if (isLazyLoad) {
       lazyLoader.observe(movieImg);
@@ -116,7 +121,7 @@ async function getMoviesByCategory(id) {
 
   console.log({ data, movies });
 
-  createMovies(movies, genericSection);
+  createMovies(movies, genericSection, true);
 }
 
 async function getMoviesBySearch(query) {
