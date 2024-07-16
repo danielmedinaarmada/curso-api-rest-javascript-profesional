@@ -21,9 +21,9 @@ const lazyLoader = new IntersectionObserver((entries) => {
       const url = entry.target.getAttribute("data-img");
       const alt = entry.target.getAttribute("data-alt");
       entry.target.setAttribute("src", url);
+      entry.target.setAttribute("alt", alt);
       entry.target.removeAttribute("data-img");
       entry.target.removeAttribute("data-alt");
-      entry.target.setAttribute("alt", alt);
       lazyLoader.unobserve(entry.target);
     }
   });
@@ -56,6 +56,7 @@ function createMovies(data, container, isLazyLoad = false) {
         "https://static.platzi.com/static/images/error/img404.png",
       )
     });
+    //https://via.placeholder.com/300x450/5c218a/ffffff?text=casa
 
     if (isLazyLoad) {
       lazyLoader.observe(movieImg);
