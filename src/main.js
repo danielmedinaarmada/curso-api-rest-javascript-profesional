@@ -32,7 +32,7 @@ const lazyLoader = new IntersectionObserver((entries) => {
 function createMovies(
   data,
   container,
-  { isLazyLoad = false, clean = true } = {}
+  { isLazyLoad = false, clean = true } = {},
 ) {
   if (clean) {
     container.innerHTML = "";
