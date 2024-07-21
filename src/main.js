@@ -37,7 +37,7 @@ function createMovies(
   if (clean) {
     container.innerHTML = "";
   }
-  
+
   data.forEach((movie) => {
     // trendingMoviePreviewList
     // const trendingPrevieMovieContainter = document.querySelector(
@@ -152,12 +152,11 @@ async function getMoviesBySearch(query) {
   createMovies(movies, genericSection);
 }
 
-async function getTrendingMovies(page=1) {
-  
+async function getTrendingMovies(page = 1) {
   const { data } = await api("/trending/movie/day", {
     params: {
       page,
-    }
+    },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
 
@@ -169,24 +168,22 @@ async function getTrendingMovies(page=1) {
   });
 
   const btnAnterior = document.getElementById("cargarMas");
-  if (btnAnterior){
-    if (btnAnterior.parentNode){
+  if (btnAnterior) {
+    if (btnAnterior.parentNode) {
       console.log(btnAnterior.parentNode);
       btnAnterior.parentNode.removeChild(btnAnterior);
     }
   }
-  
+
   const btnLoadMore = document.createElement("button");
   btnLoadMore.innerText = "Cargar más";
   btnLoadMore.addEventListener("click", () => {
     console.log("page", page);
-    getTrendingMovies(page+1);
-
+    getTrendingMovies(page + 1);
   });
-  btnLoadMore.setAttribute("id", "cargarMas")
+  btnLoadMore.setAttribute("id", "cargarMas");
   genericSection.appendChild(btnLoadMore);
 }
-
 
 async function getMovieById(movie_id) {
   // en actiox para renombrar data por movie
