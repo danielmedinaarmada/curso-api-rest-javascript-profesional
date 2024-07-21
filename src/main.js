@@ -16,7 +16,7 @@ const api = axios.create({
 
 const lazyLoader = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    console.log(entry.target );
+    console.log(entry.target);
     if (entry.isIntersecting) {
       const url = entry.target.getAttribute("data-img");
       const alt = entry.target.getAttribute("data-alt");
@@ -29,8 +29,15 @@ const lazyLoader = new IntersectionObserver((entries) => {
   });
 });
 
-function createMovies(data, container, isLazyLoad = false) {
-  container.innerHTML = "";
+function createMovies(
+  data,
+  container,
+  { isLazyLoad = false, clean = true } = {}
+) {
+  if (clean) {
+    container.innerHTML = "";
+  }
+  
   data.forEach((movie) => {
     // trendingMoviePreviewList
     // const trendingPrevieMovieContainter = document.querySelector(
@@ -51,10 +58,10 @@ function createMovies(data, container, isLazyLoad = false) {
       "https://image.tmdb.org/t/p/w300" + movie.poster_path
     );
     movieImg.addEventListener("error", () => {
-      movieImg.setAttribute( 
-        'src', 
-        "https://static.platzi.com/static/images/error/img404.png",
-      )
+      movieImg.setAttribute(
+        "src",
+        "https://static.platzi.com/static/images/error/img404.png"
+      );
     });
     //https://via.placeholder.com/300x450/5c218a/ffffff?text=casa
 
@@ -100,7 +107,10 @@ async function getTrendingMoviesPreview() {
 
   console.log({ data, movies });
 
-  createMovies(movies, trendingMoviePreviewList, true);
+  createMovies(movies, trendingMoviePreviewList, {
+    isLazyLoad: true,
+    clean: true,
+  });
 }
 
 //Lista de cateogorias o genero de peliculas
@@ -122,7 +132,10 @@ async function getMoviesByCategory(id) {
 
   console.log({ data, movies });
 
-  createMovies(movies, genericSection, true);
+  createMovies(movies, genericSection, {
+    isLazyLoad: true,
+    clean: true,
+  });
 }
 
 async function getMoviesBySearch(query) {
@@ -139,14 +152,41 @@ async function getMoviesBySearch(query) {
   createMovies(movies, genericSection);
 }
 
-async function getTrendingMovies() {
-  const { data } = await api("/trending/movie/day"); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
+async function getTrendingMovies(page=1) {
+  
+  const { data } = await api("/trending/movie/day", {
+    params: {
+      page,
+    }
+  }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
 
   console.log({ data, movies });
 
-  createMovies(movies, genericSection);
+  createMovies(movies, genericSection, {
+    isLazyLoad: true,
+    clean: page == 1,
+  });
+
+  const btnAnterior = document.getElementById("cargarMas");
+  if (btnAnterior){
+    if (btnAnterior.parentNode){
+      console.log(btnAnterior.parentNode);
+      btnAnterior.parentNode.removeChild(btnAnterior);
+    }
+  }
+  
+  const btnLoadMore = document.createElement("button");
+  btnLoadMore.innerText = "Cargar más";
+  btnLoadMore.addEventListener("click", () => {
+    console.log("page", page);
+    getTrendingMovies(page+1);
+
+  });
+  btnLoadMore.setAttribute("id", "cargarMas")
+  genericSection.appendChild(btnLoadMore);
 }
+
 
 async function getMovieById(movie_id) {
   // en actiox para renombrar data por movie
@@ -185,5 +225,8 @@ async function getRelatedMoviesId(movie_id) {
   });
 
   const relatedMovies = data.results;
-  createMovies(relatedMovies, relatedMoviesContainter);
+  createMovies(relatedMovies, relatedMoviesContainter, {
+    isLazyLoad: true,
+    clean: true,
+  });
 }
