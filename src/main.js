@@ -32,8 +32,9 @@ const lazyLoader = new IntersectionObserver((entries) => {
 function createMovies(
   data,
   container,
-  { isLazyLoad = false, clean = true } = {},
+  { isLazyLoad = false, clean = true } = {}
 ) {
+
   if (clean) {
     container.innerHTML = "";
   }
@@ -152,37 +153,36 @@ async function getMoviesBySearch(query) {
   createMovies(movies, genericSection);
 }
 
-async function getTrendingMovies(page = 1) {
-  const { data } = await api("/trending/movie/day", {
-    params: {
-      page,
-    },
-  }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
+async function getTrendingMovies() {
+  const { data } = await api("/trending/movie/day");
+  //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
-
-  console.log({ data, movies });
 
   createMovies(movies, genericSection, {
     isLazyLoad: true,
-    clean: page == 1,
+    clean: true,
   });
+}
 
-  const btnAnterior = document.getElementById("cargarMas");
-  if (btnAnterior) {
-    if (btnAnterior.parentNode) {
-      console.log(btnAnterior.parentNode);
-      btnAnterior.parentNode.removeChild(btnAnterior);
-    }
+async function getPaginatedTrendingMovies() {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+  const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
+
+  if (scrollIsBottom) {
+    page++;
+    const { data } = await api("/trending/movie/day", {
+      params: {
+        page,
+      },
+    }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
+    const movies = data.results;
+
+    createMovies(movies, genericSection, {
+      isLazyLoad: true,
+      clean: false,
+    });
   }
-
-  const btnLoadMore = document.createElement("button");
-  btnLoadMore.innerText = "Cargar más";
-  btnLoadMore.addEventListener("click", () => {
-    console.log("page", page);
-    getTrendingMovies(page + 1);
-  });
-  btnLoadMore.setAttribute("id", "cargarMas");
-  genericSection.appendChild(btnLoadMore);
 }
 
 async function getMovieById(movie_id) {
