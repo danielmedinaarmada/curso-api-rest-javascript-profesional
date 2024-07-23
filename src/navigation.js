@@ -1,4 +1,4 @@
-let page=1;
+let page = 1;
 let infiniteScroll;
 
 searchFormBtn.addEventListener("click", () => {
@@ -44,7 +44,7 @@ function navigator() {
   document.documentElement.scrollTop = 0;
 
   if (infiniteScroll) {
-    window.addEventListener("scroll", infiniteScroll, false);
+    window.addEventListener("scroll", infiniteScroll, { passive: false });
   }
 }
 
@@ -163,7 +163,7 @@ function trendsPages() {
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
 
-  headerCategoryTitle.innerText = 'Tendencias';
+  headerCategoryTitle.innerText = "Tendencias";
 
   getTrendingMovies();
   infiniteScroll = getPaginatedTrendingMovies;
