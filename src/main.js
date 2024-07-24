@@ -16,7 +16,7 @@ const api = axios.create({
 
 const lazyLoader = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    console.log(entry.target);
+    //console.log(entry.target);
     if (entry.isIntersecting) {
       const url = entry.target.getAttribute("data-img");
       const alt = entry.target.getAttribute("data-alt");
@@ -142,7 +142,7 @@ async function getMoviesByCategory(id) {
 async function getMoviesBySearch(query) {
   const { data } = await api("search/movie", {
     params: {
-      query: query,
+      query,
       language: "es",
     },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
@@ -157,6 +157,7 @@ async function getTrendingMovies() {
   const { data } = await api("/trending/movie/day");
   //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
+  maxPage = data.total_pages;
 
   createMovies(movies, genericSection, {
     isLazyLoad: true,
@@ -168,8 +169,10 @@ async function getPaginatedTrendingMovies() {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
   const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
+  const pageIsNotMax = page < maxPage;
 
-  if (scrollIsBottom) {
+
+  if (scrollIsBottom && pageIsNotMax) {
     page++;
     const { data } = await api("/trending/movie/day", {
       params: {
