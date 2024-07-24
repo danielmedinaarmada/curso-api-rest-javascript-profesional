@@ -1,5 +1,5 @@
+let page;
 let maxPage;
-let page = 1;
 let infiniteScroll;
 
 searchFormBtn.addEventListener("click", () => {
@@ -19,6 +19,7 @@ window.addEventListener("hashchange", navigator, false);
 window.addEventListener("scroll", infiniteScroll, false); //vamos a escuchar cada vez que el usuario haga scroll
 
 function navigator() {
+  page = 1;
   console.log({ location });
 
   if (infiniteScroll) {
@@ -107,6 +108,7 @@ function categoriesPages() {
   const [categoryId, categoryName] = categoryData.split("-");
   headerCategoryTitle.innerText = decodeURI(categoryName);
   getMoviesByCategory(categoryId);
+  infiniteScroll = getPaginatedMoviesByCategory(categoryId);
 }
 
 function movieDetailsPage() {
@@ -147,6 +149,9 @@ function searchPages() {
   //['#search', 'palabra']
   const [, query] = location.hash.split("=");
   getMoviesBySearch(decodeURI(query));
+  
+  infiniteScroll = getPaginatedMoviesBySearch(query);
+
 }
 
 function trendsPages() {
@@ -167,5 +172,5 @@ function trendsPages() {
   headerCategoryTitle.innerText = "Tendencias";
 
   getTrendingMovies();
-  infiniteScroll = getPaginatedTrendingMovies;
+  infiniteScroll = getPaginatedTrendingMovies();
 }
