@@ -68,6 +68,8 @@ function homePage() {
   searchForm.classList.remove("inactive");
   // si tiene la clase inactive se la quitamos
   trendingPreviewSection.classList.remove("inactive");
+  // cada vez que remueva la clase inactive de trending Previe, igual con la section likedMovieSection
+  likedMoviesSection.classList.remove('inactive');
   // si tiene la clase inactive se la quitamos
   categoriesPreviewSection.classList.remove("inactive");
   // en el home no tenemos una lista de peliculas en vertical, solo las vistas en horizonal
@@ -77,6 +79,7 @@ function homePage() {
 
   getTrendingMoviesPreview();
   getCategoriesPreview();
+  getLikedMovies();
 }
 
 function categoriesPages() {
@@ -96,6 +99,10 @@ function categoriesPages() {
   // en el home necesitamos el formulatio de busqueda le quitamos el inactive al form
   trendingPreviewSection.classList.add("inactive");
   // si tiene la clase inactive se la quitamos
+  
+  // cada vez que añada la clase inactive de trending Previe, igual con la section likedMovieSection
+  likedMoviesSection.classList.add('inactive');
+
   categoriesPreviewSection.classList.add("inactive");
   // si tiene la clase inactive se la quitamos
   genericSection.classList.remove("inactive");
@@ -122,6 +129,7 @@ function movieDetailsPage() {
   headerCategoryTitle.classList.add("inactive");
   searchForm.classList.add("inactive");
   trendingPreviewSection.classList.add("inactive");
+  likedMoviesSection.classList.add('inactive');
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.add("inactive");
   movieDetailSection.classList.remove("inactive");
@@ -142,6 +150,7 @@ function searchPages() {
   headerCategoryTitle.classList.add("inactive");
   searchForm.classList.remove("inactive");
   trendingPreviewSection.classList.add("inactive");
+  likedMoviesSection.classList.add('inactive');
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
@@ -165,6 +174,7 @@ function trendsPages() {
   headerCategoryTitle.classList.remove("inactive");
   searchForm.classList.add("inactive");
   trendingPreviewSection.classList.add("inactive");
+  likedMoviesSection.classList.add('inactive');
   categoriesPreviewSection.classList.add("inactive");
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");

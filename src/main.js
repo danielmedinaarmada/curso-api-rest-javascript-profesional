@@ -1,6 +1,8 @@
 //vamos a crear la configuracion por defecto que vamos a usa en nuestras consultas
 // no lo podemos agregar header como defecto
 // tambien podemos agregar parametros por defecto
+
+//Data
 const api = axios.create({
   baseURL: "https://api.themoviedb.org/3/",
   params: {
@@ -12,8 +14,35 @@ const api = axios.create({
   },
 });
 
-// Helpers / Utils
+function likedMoviesList() {
+  //devolvernos el array de movies que tenemos en localStorage
+  const item = JSON.parse(localStorage.getItem("like_movies"));
+  let movies;
 
+  if (item) {
+    movies = item;
+  } else {
+    movies = {};
+  }
+
+  return movies;
+}
+
+function likeMovie(movie) {
+  const likedMovies = likedMoviesList();
+
+  console.log({ likedMovies });
+
+  if (likedMovies[movie.id]) {
+    delete likedMovies[movie.id];
+  } else {
+    likedMovies[movie.id] = movie;
+  }
+
+  localStorage.setItem("like_movies", JSON.stringify(likedMovies));
+}
+
+// Helpers / Utils
 const lazyLoader = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     //console.log(entry.target);
@@ -34,7 +63,6 @@ function createMovies(
   container,
   { isLazyLoad = false, clean = true } = {}
 ) {
-
   if (clean) {
     container.innerHTML = "";
   }
@@ -66,11 +94,25 @@ function createMovies(
     });
     //https://via.placeholder.com/300x450/5c218a/ffffff?text=casa
 
+    const movieBtn = document.createElement("button");
+    movieBtn.classList.add("movie-btn");
+    
+    //Aqui le preguntamos a ese objeto (localStorage) si tiene la pelicula
+    likedMoviesList()[movie.id] && movieBtn.classList.add("movie-btn--liked")
+
+    movieBtn.addEventListener("click", (e) => {
+      movieBtn.classList.toggle("movie-btn--liked");
+      e.stopPropagation();
+      likeMovie(movie);
+      getLikedMovies();
+    });
+
     if (isLazyLoad) {
       lazyLoader.observe(movieImg);
     }
 
     movieContainter.appendChild(movieImg);
+    movieContainter.appendChild(movieBtn);
     container.appendChild(movieContainter);
   });
 }
@@ -140,12 +182,12 @@ async function getMoviesByCategory(id) {
 }
 
 function getPaginatedMoviesByCategory(id) {
-  return async function(){
+  return async function () {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
     const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
     const pageIsNotMax = page < maxPage;
-  
+
     console.log({ page, maxPage, scrollIsBottom, pageIsNotMax });
 
     if (scrollIsBottom && pageIsNotMax) {
@@ -158,13 +200,13 @@ function getPaginatedMoviesByCategory(id) {
         },
       }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
       const movies = data.results;
-    
+
       createMovies(movies, genericSection, {
         isLazyLoad: true,
         clean: false,
       });
     }
-  }
+  };
 }
 
 async function getMoviesBySearch(query) {
@@ -177,18 +219,18 @@ async function getMoviesBySearch(query) {
   const movies = data.results;
   maxPage = data.total_pages;
 
-  console.log({ query, maxPage, movies, totalmovies:data });
+  console.log({ query, maxPage, movies, totalmovies: data });
 
   createMovies(movies, genericSection);
 }
 
 function getPaginatedMoviesBySearch(query) {
-  return async function(){
+  return async function () {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
     const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
     const pageIsNotMax = page < maxPage;
-    
+
     console.log({ page, maxPage, scrollIsBottom, pageIsNotMax });
 
     if (scrollIsBottom && pageIsNotMax) {
@@ -201,13 +243,13 @@ function getPaginatedMoviesBySearch(query) {
         },
       }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
       const movies = data.results;
-    
+
       createMovies(movies, genericSection, {
         isLazyLoad: true,
         clean: false,
       });
     }
-  }
+  };
 }
 
 async function getTrendingMovies() {
@@ -223,13 +265,13 @@ async function getTrendingMovies() {
 }
 
 function getPaginatedTrendingMovies() {
-  return async function(){
+  return async function () {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
     const scrollIsBottom = scrollTop + clientHeight >= scrollHeight - 15;
     const pageIsNotMax = page < maxPage;
     console.log({ page, maxPage, scrollIsBottom, pageIsNotMax });
-  
+
     if (scrollIsBottom && pageIsNotMax) {
       page++;
       const { data } = await api("/trending/movie/day", {
@@ -238,13 +280,13 @@ function getPaginatedTrendingMovies() {
         },
       }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
       const movies = data.results;
-  
+
       createMovies(movies, genericSection, {
         isLazyLoad: true,
         clean: false,
       });
     }
-  }
+  };
 }
 
 async function getMovieById(movie_id) {
@@ -288,4 +330,10 @@ async function getRelatedMoviesId(movie_id) {
     isLazyLoad: true,
     clean: true,
   });
+}
+
+function getLikedMovies() {
+  const likedMovies = likedMoviesList();
+  const moviesArray = Object.values(likedMovies);
+  createMovies(moviesArray, likedMoviesListArticle, { isLazyLoad: true, clean: true });
 }
