@@ -168,7 +168,6 @@ async function getMoviesByCategory(id) {
   const { data } = await api("discover/movie", {
     params: {
       with_genres: id,
-      language: "es",
     },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
@@ -196,7 +195,6 @@ function getPaginatedMoviesByCategory(id) {
         params: {
           with_genres: id,
           page,
-          language: "es",
         },
       }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
       const movies = data.results;
@@ -213,7 +211,6 @@ async function getMoviesBySearch(query) {
   const { data } = await api("search/movie", {
     params: {
       query,
-      language: "es",
     },
   }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
   const movies = data.results;
@@ -239,7 +236,6 @@ function getPaginatedMoviesBySearch(query) {
         params: {
           query,
           page,
-          language: "es",
         },
       }); //la respuesta ya viene parseada en JSON y destructuramos status y/o data
       const movies = data.results;
@@ -291,11 +287,7 @@ function getPaginatedTrendingMovies() {
 
 async function getMovieById(movie_id) {
   // en actiox para renombrar data por movie
-  const { data: movie } = await api("movie/" + movie_id, {
-    params: {
-      language: "es",
-    },
-  });
+  const { data: movie } = await api("movie/" + movie_id);
 
   console.log(movie);
 
@@ -319,11 +311,7 @@ async function getMovieById(movie_id) {
 }
 
 async function getRelatedMoviesId(movie_id) {
-  const { data } = await api(`movie/${movie_id}/similar`, {
-    params: {
-      language: "es",
-    },
-  });
+  const { data } = await api(`movie/${movie_id}/similar`);
 
   const relatedMovies = data.results;
   createMovies(relatedMovies, relatedMoviesContainter, {
