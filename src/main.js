@@ -3,11 +3,14 @@
 // tambien podemos agregar parametros por defecto
 
 //Data
+
+const language = navigator.language || "en";
+
 const api = axios.create({
   baseURL: "https://api.themoviedb.org/3/",
   params: {
     api_key: API_KEY,
-    language: "es",
+    language,
   },
   headers: {
     "Content-Type": "application/json;utf-8",
